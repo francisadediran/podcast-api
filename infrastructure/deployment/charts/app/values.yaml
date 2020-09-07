@@ -1,0 +1,27 @@
+---
+imgrepo: "pathfinders.azurecr.io/nearform/"
+vaultname: pathfinders
+
+service:
+  externalPort: 80
+  clusterType: ClusterIP
+
+image: podcast-api
+imageTag: 89-100
+imagePullPolicy: Always
+
+app:
+  internalPort: 5000
+  replicas: 2
+
+ingress:
+  enabled: true
+  hosts:
+  - hackernews.webinar.nearform.net
+  annotations:
+    kubernetes.io/tls-acme: 'true'
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  tls:
+  - hosts:
+    - hackernews.webinar.nearform.net
+    secretName: dgs-tls

@@ -1,0 +1,39 @@
+version: "3.7"
+services:
+  app:
+    container_name: runnerslife
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/home/node/app
+      - node_modules:/home/node/app/node_modules
+    env_file: .env
+    restart: unless-stopped
+    networks:
+      - app-network
+    command: ./wait-for.sh mongodb:27017 -- /home/node/app/node_modules/.bin/nodemon --exec babel-node index.js
+    environment:
+      - MONGO_HOSTNAME=mongodb
+      - MONGO_PORT=27017
+      - MONGO_DATABASE=Icarusdev
+      - PORT=5000
+    links:
+      - mongodb
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data_container:/data/dba
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
+volumes:
+  mongodb_data_container:
+  node_modules:
+    
