@@ -3,6 +3,24 @@ import { httpStatus } from '../../utils/httpStatus'
 import { pool } from '../../config/mysqlconnect'
 const users = {}
 
+/**
+ * Get user by Id
+ * @returns {User}
+ */
+users.getById = async (req, res, next) => {
+  try {
+    const user = await userModel.findById(req.params.id)
+    if (user) {
+      user.password = null
+      return res.json(user)
+    } else {
+      return res.status(404).send('User not found')
+    }
+  } catch (e) {
+    next(e)
+  }
+}
+
 users.index = async (req, res) => {
   const users = await userModel.find({}, { password: 0, __v: 0 })
   return res.json({ data: { users } })
